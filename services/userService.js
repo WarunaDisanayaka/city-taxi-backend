@@ -1,22 +1,34 @@
-const bcrypt = require("bcryptjs");
-const User = require("../models/userModel");
-const Passenger = require("../models/passengerModel");
-const Driver = require("../models/driverModel");
+const bcrypt = require("bcrypt");
+const { sendRegistrationEmail } = require("./emailService");
+const {
+  createPassenger,
+  emailExists,
+  phoneExists,
+} = require("../models/passengerModel");
 
-class UserService {
-  static async registerPassenger(name, email, password, contact_number) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create(name, email, hashedPassword, "PASSENGER");
-    await Passenger.create(user.insertId, contact_number);
-    return user;
+// Function to handle passenger registration
+const registerPassenger = async (username, email, phone, password) => {
+  // Check if the email or phone already exists
+  const emailExistsCheck = await emailExists(email);
+  if (emailExistsCheck) {
+    throw new Error("Email is already registered.");
   }
 
-  static async registerDriver(name, email, password, vehicle_number) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create(name, email, hashedPassword, "DRIVER");
-    await Driver.create(user.insertId, vehicle_number);
-    return user;
+  const phoneExistsCheck = await phoneExists(phone);
+  if (phoneExistsCheck) {
+    throw new Error("Phone number is already registered.");
   }
-}
 
-module.exports = UserService;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    await createPassenger(username, email, phone, hashedPassword);
+    await sendRegistrationEmail(email, username, password);
+    return { message: "Registration successful, confirmation email sent." };
+  } catch (error) {
+    throw new Error("Registration failed: " + error.message);
+  }
+};
+
+module.exports = {
+  registerPassenger,
+};
