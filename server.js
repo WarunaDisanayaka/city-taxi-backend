@@ -1,12 +1,11 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
-const db = require("./config/db");
+require("dotenv").config();
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json()); // To parse JSON request bodies
 
-// Routes
+// Use the auth routes
 app.use("/api/auth", authRoutes);
 
 // Start the server

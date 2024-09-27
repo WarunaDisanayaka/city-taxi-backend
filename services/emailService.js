@@ -1,22 +1,28 @@
-const transporter = require("../config/nodemailer");
+const nodemailer = require("nodemailer");
 
-class EmailService {
-  static async sendRegistrationEmail(email, name) {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "City Taxi Registration Successful",
-      text: `Hi ${name}, your registration was successful!`,
-    };
+// Create a transporter for nodemailer
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    user: "warunadesigns@gmail.com",
+    pass: "gxnu znaq luof auom",
+  },
+});
 
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error("Error sending email:", err);
-      } else {
-        console.log("Email sent:", info.response);
-      }
-    });
-  }
-}
+// Function to send registration email
+const sendRegistrationEmail = (email, username, password) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Registration Successful",
+    text: `Hello ${username},\n\nThank you for registering! Your username is :- "${username}" and your password is :- "${password}".\n\nBest regards,\nCity Taxi Team`,
+  };
 
-module.exports = EmailService;
+  return transporter.sendMail(mailOptions);
+};
+
+module.exports = {
+  sendRegistrationEmail,
+};
