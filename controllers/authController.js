@@ -1,10 +1,37 @@
+// controllers/authController.js
 const { registerPassenger } = require("../services/userService");
+const { registerDriver } = require("../services/userService"); // Ensure this import exists
 
 // Function to handle registration request
 const register = async (req, res) => {
-  const { username, email, phone, password } = req.body;
+  const {
+    userType,
+    username,
+    email,
+    phone,
+    password,
+    vehicleType,
+    vehicleNumber,
+  } = req.body;
+
   try {
-    const response = await registerPassenger(username, email, phone, password);
+    let response;
+
+    if (userType === "passenger") {
+      response = await registerPassenger(username, email, phone, password);
+    } else if (userType === "driver") {
+      response = await registerDriver(
+        username,
+        email,
+        phone,
+        vehicleType,
+        vehicleNumber,
+        password
+      );
+    } else {
+      return res.status(400).json({ message: "Invalid user type." });
+    }
+
     res.status(201).json(response);
   } catch (error) {
     console.error(error);
