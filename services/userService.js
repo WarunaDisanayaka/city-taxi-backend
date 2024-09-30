@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const { sendRegistrationEmail } = require("./emailService");
 const Driver = require("../models/driverModel");
 const Passenger = require("../models/passengerModel");
+const { generateToken } = require("./authService"); // Assume you have a function to generate JWT
 
 // Function to handle passenger registration
 const registerPassenger = async (username, email, phone, password) => {
@@ -27,10 +28,6 @@ const registerPassenger = async (username, email, phone, password) => {
   } catch (error) {
     throw new Error("Passenger registration failed: " + error.message);
   }
-};
-
-module.exports = {
-  registerPassenger,
 };
 
 // Function to handle driver registration
@@ -70,7 +67,36 @@ const registerDriver = async (
   }
 };
 
+const loginPassenger = async (emailOrPhone, password) => {
+  // Check if the email or phone exists
+  const passenger = await Passenger.findByEmailOrPhone(emailOrPhone);
+  if (!passenger) {
+    throw new Error("Invalid email/phone or password.");
+  }
+
+  // Compare the provided password with the hashed password
+  const passwordMatch = await bcrypt.compare(password, passenger.password);
+  if (!passwordMatch) {
+    throw new Error("Invalid email/phone or password.");
+  }
+
+  // Generate token (assuming JWT)
+  const token = generateToken({ id: passenger.id, role: "passenger" });
+
+  return {
+    message: "Login successful",
+    token,
+    passenger: {
+      id: passenger.id,
+      username: passenger.username,
+      email: passenger.email,
+      phone: passenger.phone,
+    },
+  };
+};
+
 module.exports = {
+  loginPassenger,
   registerPassenger,
   registerDriver,
 };

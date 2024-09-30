@@ -34,8 +34,24 @@ const createPassenger = async (username, email, phone, password) => {
   }
 };
 
+const findByEmailOrPhone = async (emailOrPhone) => {
+  const query = `
+    SELECT * FROM passengers 
+    WHERE email = ? OR phone = ?
+  `;
+  try {
+    const [results] = await db.query(query, [emailOrPhone, emailOrPhone]);
+    return results.length > 0 ? results[0] : null; // Return the passenger object if found, else null
+  } catch (error) {
+    throw new Error(
+      `Error finding passenger by email or phone: ${error.message}`
+    );
+  }
+};
+
 module.exports = {
   createPassenger,
   emailExists,
   phoneExists,
+  findByEmailOrPhone,
 };
