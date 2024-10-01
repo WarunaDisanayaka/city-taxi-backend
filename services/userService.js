@@ -95,8 +95,37 @@ const loginPassenger = async (emailOrPhone, password) => {
   };
 };
 
+const loginDriver = async (emailOrPhone, password) => {
+  // Check if the email or phone exists
+  const driver = await Driver.findByEmail(emailOrPhone);
+  if (!driver) {
+    throw new Error("Invalid email/phone or password.");
+  }
+
+  // Compare the provided password with the hashed password
+  const passwordMatch = await bcrypt.compare(password, driver.password);
+  if (!passwordMatch) {
+    throw new Error("Invalid email/phone or password.");
+  }
+
+  // Generate token (assuming JWT)
+  const token = generateToken({ id: driver.id, role: "driver" });
+
+  return {
+    message: "Login successful",
+    token,
+    driver: {
+      id: driver.id,
+      username: driver.username,
+      email: driver.email,
+      phone: driver.phone,
+    },
+  };
+};
+
 module.exports = {
   loginPassenger,
   registerPassenger,
   registerDriver,
+  loginDriver,
 };
