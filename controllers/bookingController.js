@@ -61,3 +61,52 @@ exports.saveBooking = async (req, res) => {
       .json({ message: "Failed to save booking", error: error.message });
   }
 };
+
+exports.getAllBookingsByDriver = async (req, res) => {
+  const { driverId } = req.params;
+
+  try {
+    const bookings = await Booking.getAllBookingsByDriver(driverId);
+    res.status(200).json({
+      message: "Bookings retrieved successfully",
+      bookings,
+    });
+  } catch (error) {
+    console.error("Error retrieving bookings:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve bookings", error: error.message });
+  }
+};
+
+// Function to update booking status and driver status
+exports.updateBookingStatus = async (req, res) => {
+  const { bookingId, newStatus, driverId } = req.body;
+
+  // Validate input
+  if (!bookingId || !newStatus || !driverId) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  try {
+    // Update booking status
+    await Booking.updateStatus(bookingId, newStatus);
+
+    // If the new status is "Confirmed" or "In Progress," update driver status to "busy"
+    if (newStatus === "Confirmed" || newStatus === "In Progress") {
+      await Booking.updateDriverStatus(driverId, "busy");
+    } else if (newStatus === "Completed") {
+      await Booking.updateDriverStatus(driverId, "available");
+    }
+
+    res
+      .status(200)
+      .json({ message: "Booking and driver status updated successfully" });
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    res.status(500).json({
+      message: "Failed to update booking status",
+      error: error.message,
+    });
+  }
+};
