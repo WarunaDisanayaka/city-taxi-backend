@@ -110,3 +110,30 @@ exports.updateBookingStatus = async (req, res) => {
     });
   }
 };
+
+// Fetch passenger bookings
+exports.getPassengerBookings = async (req, res) => {
+  const { passengerId } = req.params;
+  console.log("Passenger ID: ", passengerId);
+  try {
+    const bookings = await Booking.getAllBookingsByPassenger(passengerId);
+
+    // Check if bookings were fetched successfully
+    if (bookings.success) {
+      res
+        .status(200)
+        .json({
+          bookings: bookings.data,
+          page: bookings.page,
+          limit: bookings.limit,
+        });
+    } else {
+      res.status(404).json({ message: bookings.message });
+    }
+  } catch (error) {
+    console.error("Error fetching passenger bookings: ", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching bookings." });
+  }
+};

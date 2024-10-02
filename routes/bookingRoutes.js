@@ -13,4 +13,6 @@ router.get(
 
 router.put("/bookings/update-status", bookingController.updateBookingStatus);
 
+router.get("/bookings/:passengerId", bookingController.getPassengerBookings);
+
 module.exports = router;
