@@ -74,6 +74,51 @@ const Booking = {
     const [results] = await db.query(sql, [status, driverId]);
     return results;
   },
+
+  getAllBookingsByPassenger: async (passengerId, page = 1, limit = 10) => {
+    try {
+      // Calculate offset for pagination
+      const offset = (page - 1) * limit;
+
+      console.log(
+        `Fetching bookings for passenger ID: ${passengerId}, page: ${page}, limit: ${limit}`
+      );
+
+      // SQL query to fetch bookings for the passenger
+      const sql = `
+        SELECT b.id, b.driver_id, b.from_location, b.to_location, b.distance, 
+               b.journey_date, b.journey_time, b.fee, b.status, b.created_at,
+               d.username AS driver_name, d.phone_number AS driver_phone
+        FROM bookings b
+        JOIN drivers d ON b.driver_id = d.id
+        WHERE b.passenger_id = ?
+        LIMIT ? OFFSET ?
+      `;
+
+      // Execute the query with passengerId, limit, and offset
+      const [results] = await db.query(sql, [passengerId, limit, offset]);
+
+      if (results.length > 0) {
+        return {
+          success: true,
+          page,
+          limit,
+          data: results,
+        };
+      } else {
+        return {
+          success: false,
+          message: "No bookings found for this passenger.",
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching bookings for passenger: ", error);
+      return {
+        success: false,
+        message: "Error fetching bookings",
+      };
+    }
+  },
 };
 
 module.exports = Booking;
