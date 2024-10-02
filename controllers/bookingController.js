@@ -93,9 +93,9 @@ exports.updateBookingStatus = async (req, res) => {
     await Booking.updateStatus(bookingId, newStatus);
 
     // If the new status is "Confirmed" or "In Progress," update driver status to "busy"
-    if (newStatus === "Confirmed" || newStatus === "In Progress") {
+    if (newStatus === "confirmed" || newStatus === "In Progress") {
       await Booking.updateDriverStatus(driverId, "busy");
-    } else if (newStatus === "Completed") {
+    } else if (newStatus === "completed") {
       await Booking.updateDriverStatus(driverId, "available");
     }
 
@@ -120,13 +120,11 @@ exports.getPassengerBookings = async (req, res) => {
 
     // Check if bookings were fetched successfully
     if (bookings.success) {
-      res
-        .status(200)
-        .json({
-          bookings: bookings.data,
-          page: bookings.page,
-          limit: bookings.limit,
-        });
+      res.status(200).json({
+        bookings: bookings.data,
+        page: bookings.page,
+        limit: bookings.limit,
+      });
     } else {
       res.status(404).json({ message: bookings.message });
     }
