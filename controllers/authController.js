@@ -2,6 +2,7 @@
 const { registerPassenger } = require("../services/userService");
 const { registerDriver } = require("../services/userService");
 const { loginPassenger, loginDriver } = require("../services/userService");
+const Admin = require("../models/Admin"); // Adjust the path as necessary
 
 // Function to handle registration request
 const register = async (req, res) => {
@@ -62,7 +63,37 @@ const login = async (req, res) => {
   }
 };
 
+// Function to handle admin login
+const loginAdmin = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Find admin by username
+    const admin = await Admin.findByUsername(username);
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Validate password
+    const isValidPassword = Admin.validatePassword(admin.password, password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // If username and password are valid
+    return res
+      .status(200)
+      .json({ message: "Login successful", adminId: admin.id });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   register,
   login,
+  loginAdmin,
 };

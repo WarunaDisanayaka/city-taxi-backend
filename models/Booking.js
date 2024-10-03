@@ -61,6 +61,38 @@ const Booking = {
     return results;
   },
 
+  // Get total count of all bookings
+  getTotalBookingsCount: async () => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings`;
+    const [results] = await db.query(sql);
+    return results[0].total;
+  },
+
+  // Get total count of all bookings
+  getBookingsPending: async () => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status="pending"`;
+    const [results] = await db.query(sql);
+    return results[0].total;
+  },
+
+  getBookingsConfirmed: async () => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status="confirmed"`;
+    const [results] = await db.query(sql);
+    return results[0].total;
+  },
+
+  getBookingsCompleted: async () => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status="completed"`;
+    const [results] = await db.query(sql);
+    return results[0].total;
+  },
+
+  getAllBookings: async () => {
+    const sql = `SELECT * FROM bookings`;
+    const [results] = await db.query(sql);
+    return results;
+  },
+
   // Method to update booking status
   updateStatus: async (bookingId, newStatus) => {
     const sql = `UPDATE bookings SET status = ? WHERE id = ?`;
