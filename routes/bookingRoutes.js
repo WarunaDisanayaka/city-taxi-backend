@@ -15,9 +15,14 @@ router.put("/bookings/update-status", bookingController.updateBookingStatus);
 
 router.get("/bookings/:passengerId", bookingController.getPassengerBookings);
 
-router.get("/bookings/total", bookingController.getTotalBookings);
-router.get("/bookings/confirmed", bookingController.getConfirmedTrips);
-router.get("/bookings/ongoing", bookingController.getOngoingTrips);
-router.get("/bookings/completed", bookingController.getCompletedTrips);
+router.get("/all-bookings", bookingController.getAllBookings);
+
+router.get("/bookings", bookingController.getTotalBookingsCount);
+
+router.get("/pending-bookings", bookingController.getPendingBookingsCount);
+
+router.get("/confirmed-bookings", bookingController.getTotalBookingConfirmed);
+
+router.get("/completed-bookings", bookingController.getTotalBookingCompleted);
 
 module.exports = router;
