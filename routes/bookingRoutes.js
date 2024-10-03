@@ -17,12 +17,24 @@ router.get("/bookings/:passengerId", bookingController.getPassengerBookings);
 
 router.get("/all-bookings", bookingController.getAllBookings);
 
-router.get("/bookings", bookingController.getTotalBookingsCount);
+router.get(
+  "/driver-bookings/:driverId",
+  bookingController.getTotalBookingsCountByDriver
+);
 
-router.get("/pending-bookings", bookingController.getPendingBookingsCount);
+router.get(
+  "/pending-bookings/:driverId",
+  bookingController.getPendingBookingsCountByDriver
+);
 
-router.get("/confirmed-bookings", bookingController.getTotalBookingConfirmed);
+router.get(
+  "/confirmed-bookings/:driverId",
+  bookingController.getTotalBookingConfirmedByDriver
+);
 
-router.get("/completed-bookings", bookingController.getTotalBookingCompleted);
+router.get(
+  "/completed-bookings/:driverId",
+  bookingController.getTotalBookingCompletedByDriver
+);
 
 module.exports = router;
