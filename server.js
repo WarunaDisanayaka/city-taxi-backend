@@ -2,6 +2,7 @@ const express = require("express");
 const authRoutes = require("./routes/authRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const passengerRoutes = require("./routes/passengerRoutes");
 const cors = require("cors"); // Import cors
 
 require("dotenv").config();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api", driverRoutes);
 app.use("/api", bookingRoutes);
+app.use("/api", passengerRoutes);
 
 // Start the server
 app.listen(8000, () => {
