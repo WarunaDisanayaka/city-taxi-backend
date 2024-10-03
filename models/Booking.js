@@ -87,6 +87,34 @@ const Booking = {
     return results[0].total;
   },
 
+  // Get total count of all bookings by driver_id
+  getTotalBookingsCountByDriver: async (driverId) => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE driver_id = ?`;
+    const [results] = await db.query(sql, [driverId]);
+    return results[0].total;
+  },
+
+  // Get total count of all pending bookings by driver_id
+  getBookingsPendingByDriver: async (driverId) => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status = "pending" AND driver_id = ?`;
+    const [results] = await db.query(sql, [driverId]);
+    return results[0].total;
+  },
+
+  // Get total count of all confirmed bookings by driver_id
+  getBookingsConfirmedByDriver: async (driverId) => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status = "confirmed" AND driver_id = ?`;
+    const [results] = await db.query(sql, [driverId]);
+    return results[0].total;
+  },
+
+  // Get total count of all completed bookings by driver_id
+  getBookingsCompletedByDriver: async (driverId) => {
+    const sql = `SELECT COUNT(*) AS total FROM bookings WHERE status = "completed" AND driver_id = ?`;
+    const [results] = await db.query(sql, [driverId]);
+    return results[0].total;
+  },
+
   getAllBookings: async () => {
     const sql = `SELECT * FROM bookings`;
     const [results] = await db.query(sql);

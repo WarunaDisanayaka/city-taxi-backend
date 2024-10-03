@@ -212,3 +212,75 @@ exports.getTotalBookingCompleted = async (req, res) => {
     });
   }
 };
+
+// Get total count of all bookings by driver_id
+exports.getTotalBookingsCountByDriver = async (req, res) => {
+  const driverId = req.params.driverId; // Get driverId from request parameters
+  try {
+    const totalBookings = await Booking.getTotalBookingsCountByDriver(driverId); // Pass driverId to service method
+    res.status(200).json({ totalBookings });
+  } catch (error) {
+    console.error("Error retrieving total bookings count by driver:", error);
+    res.status(500).json({
+      message: "Failed to retrieve total bookings count",
+      error: error.message,
+    });
+  }
+};
+
+// Get total count of pending bookings by driver_id
+exports.getPendingBookingsCountByDriver = async (req, res) => {
+  const driverId = req.params.driverId; // Get driverId from request parameters
+  try {
+    const totalPendingBookings = await Booking.getBookingsPendingByDriver(
+      driverId
+    ); // Pass driverId to service method
+    res.status(200).json({ totalPendingBookings });
+  } catch (error) {
+    console.error("Error retrieving pending bookings count by driver:", error);
+    res.status(500).json({
+      message: "Failed to retrieve pending bookings count",
+      error: error.message,
+    });
+  }
+};
+
+// Get total count of confirmed bookings by driver_id
+exports.getTotalBookingConfirmedByDriver = async (req, res) => {
+  const driverId = req.params.driverId; // Get driverId from request parameters
+  try {
+    const totalConfirmedBookings = await Booking.getBookingsConfirmedByDriver(
+      driverId
+    ); // Pass driverId to service method
+    res.status(200).json({ totalConfirmedBookings });
+  } catch (error) {
+    console.error(
+      "Error retrieving confirmed bookings count by driver:",
+      error
+    );
+    res.status(500).json({
+      message: "Failed to retrieve confirmed bookings count",
+      error: error.message,
+    });
+  }
+};
+
+// Get total count of completed bookings by driver_id
+exports.getTotalBookingCompletedByDriver = async (req, res) => {
+  const driverId = req.params.driverId; // Get driverId from request parameters
+  try {
+    const totalCompletedBookings = await Booking.getBookingsCompletedByDriver(
+      driverId
+    ); // Pass driverId to service method
+    res.status(200).json({ totalCompletedBookings });
+  } catch (error) {
+    console.error(
+      "Error retrieving completed bookings count by driver:",
+      error
+    );
+    res.status(500).json({
+      message: "Failed to retrieve completed bookings count",
+      error: error.message,
+    });
+  }
+};
