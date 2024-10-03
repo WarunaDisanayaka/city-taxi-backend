@@ -135,3 +135,64 @@ exports.getPassengerBookings = async (req, res) => {
       .json({ error: "An error occurred while fetching bookings." });
   }
 };
+
+// Get total bookings
+exports.getTotalBookings = (req, res) => {
+  const query = "SELECT COUNT(*) AS totalBookings FROM bookings"; // Adjust table name if needed
+  db.query(query, (error, results) => {
+    if (error) {
+      return res
+        .status(500)
+        .json({ message: "Error fetching total bookings", error });
+    }
+    res.status(200).json({ totalBookings: results[0].totalBookings });
+  });
+};
+
+// Get confirmed trips
+exports.getConfirmedTrips = (req, res) => {
+  const query =
+    "SELECT COUNT(*) AS confirmedTrips FROM bookings WHERE status = ?";
+  db.query(query, ["confirmed"], (error, results) => {
+    if (error) {
+      console.error("Error fetching confirmed trips:", error);
+      return res
+        .status(500)
+        .json({ message: "Error fetching confirmed trips", error });
+    }
+
+    if (results.length === 0 || results[0].confirmedTrips === 0) {
+      return res.status(404).json({ message: "No confirmed trips found." });
+    }
+
+    res.status(200).json({ confirmedTrips: results[0].confirmedTrips });
+  });
+};
+
+// Get ongoing trips
+exports.getOngoingTrips = (req, res) => {
+  const query =
+    "SELECT COUNT(*) AS ongoingTrips FROM bookings WHERE status = ?";
+  db.query(query, ["ongoing"], (error, results) => {
+    if (error) {
+      return res
+        .status(500)
+        .json({ message: "Error fetching ongoing trips", error });
+    }
+    res.status(200).json({ ongoingTrips: results[0].ongoingTrips });
+  });
+};
+
+// Get completed trips
+exports.getCompletedTrips = (req, res) => {
+  const query =
+    "SELECT COUNT(*) AS completedTrips FROM bookings WHERE status = ?";
+  db.query(query, ["completed"], (error, results) => {
+    if (error) {
+      return res
+        .status(500)
+        .json({ message: "Error fetching completed trips", error });
+    }
+    res.status(200).json({ completedTrips: results[0].completedTrips });
+  });
+};

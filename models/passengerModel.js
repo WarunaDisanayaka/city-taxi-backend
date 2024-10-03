@@ -49,9 +49,20 @@ const findByEmailOrPhone = async (emailOrPhone) => {
   }
 };
 
+const getAllPassengers = async () => {
+  const query = "SELECT id,username,email,phone FROM passengers";
+  try {
+    const [results] = await db.query(query);
+    return results; // Return all passengers
+  } catch (error) {
+    throw new Error(`Error retrieving all passengers: ${error.message}`);
+  }
+};
+
 module.exports = {
   createPassenger,
   emailExists,
   phoneExists,
   findByEmailOrPhone,
+  getAllPassengers,
 };
